@@ -1,0 +1,45 @@
+version: '3'
+services:
+
+  # PHP Service
+  app:
+    build: ./php/
+    restart: "no"
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - ../:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  # Nginx Service
+  webserver:
+    image: nginx:alpine
+    restart: "no"
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./logs:/var/log/nginx
+
+  # MySQL Service
+  db:
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    image: "mysql:${MYSQL_IMAGE_VERSION}"
+    command: --default-authentication-plugin=mysql_native_password
+    restart: "no"
+    tty: true
+    ports:
+      - "33064:3306"
+    environment:
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+    volumes:
+      - ./mysql/data/:/var/lib/mysql
+      - ./mysql/files/:/var/lib/mysql-files
+      - ./mysql/etc/my.cnf:/etc/mysql/my.cnf
