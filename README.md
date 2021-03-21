@@ -1,7 +1,8 @@
 ## Minimal LEMP stack based on Docker
 
 ## Get Started
-All command examples are desribed for UNIX-like systems (Linux, Mac OS).
+
+All command examples are described for UNIX-like systems (Linux, Mac OS).
 
 ### Prerequisites
 
